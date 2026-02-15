@@ -1,0 +1,95 @@
+networks:
+  patroni-net:
+    driver: bridge
+
+services:
+  etcd:
+    image: quayio/coreos-etcd:v3.1.8
+    container_name: etcd
+    networks: [patroni-net]
+    command: >
+      etcd
+      --name etcd
+      --data-dir /etcd-data
+      --advertise-client-urls http://etcd:2379
+      --listen-client-urls http://0.0.0.0:2379
+    ports:
+      - "2379:2379"
+
+  pg1:
+    image: nkonev/patroni
+    container_name: pg1
+    hostname: pg1
+    networks: [patroni-net]
+    environment:
+      PATRONI_NAME: pg1
+      PATRONI_SCOPE: pg-cluster
+
+      PATRONI_ETCD3_HOSTS: etcd:2379
+
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: pg1:5432
+
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: pg1:8008
+
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8008:8008"
+
+  pg2:
+    image: nkonev/patroni
+    container_name: pg2
+    hostname: pg2
+    networks: [patroni-net]
+    environment:
+      PATRONI_NAME: pg2
+      PATRONI_SCOPE: pg-cluster
+
+      PATRONI_ETCD3_HOSTS: etcd:2379
+
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: pg2:5432
+
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: pg2:8008
+
+      POSTGRES_PASSWORD: postgres
+
+  pg3:
+    image: nkonev/patroni
+    container_name: pg3
+    hostname: pg3
+    networks: [patroni-net]
+    environment:
+      PATRONI_NAME: pg3
+      PATRONI_SCOPE: pg-cluster
+
+      PATRONI_ETCD3_HOSTS: etcd:2379
+
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: pg3:5432
+
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: pg3:8008
+
+      POSTGRES_PASSWORD: postgres
+
+  pg4:
+    image: nkonev/patroni
+    container_name: pg4
+    hostname: pg4
+    networks: [patroni-net]
+    environment:
+      PATRONI_NAME: pg4
+      PATRONI_SCOPE: pg-cluster
+
+      PATRONI_ETCD3_HOSTS: etcd:2379
+
+      PATRONI_POSTGRESQL_LISTEN: 0.0.0.0:5432
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: pg4:5432
+
+      PATRONI_RESTAPI_LISTEN: 0.0.0.0:8008
+      PATRONI_RESTAPI_CONNECT_ADDRESS: pg4:8008
+
+      POSTGRES_PASSWORD: postgres
