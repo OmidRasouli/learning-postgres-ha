@@ -93,3 +93,15 @@ services:
       PATRONI_RESTAPI_CONNECT_ADDRESS: pg4:8008
 
       POSTGRES_PASSWORD: postgres
+
+  haproxy:
+    image: haproxy:3.1.13
+    container_name: haproxy
+    hostname: haproxy
+    networks: [patroni-net]
+    ports:
+      - "5432:5432"   # write (master)
+      - "5433:5433"   # read (replicas)
+      - "7000:7000"   # stats UI
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
